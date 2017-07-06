@@ -1,0 +1,6 @@
+{
+    "require": {
+        "vinelab/rss": "^1.0",
+        "mekras/atom": "^1.0"
+    }
+}
