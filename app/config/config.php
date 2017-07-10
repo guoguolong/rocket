@@ -33,7 +33,7 @@ return new \Phalcon\Config([
         'baseUri' => preg_replace('/public([\/\\\\])index.php$/', '', $_SERVER["PHP_SELF"]),
     ],
     'services' => [
-        'volt.extension' => 'Rocket\Volt\VoltAdapter',
+        'volt.adapter' => 'Rocket\Volt\VoltAdapter',
     ],
     'volt' => [
         'extensions' => ['Rocket\Volt\CommonVoltExtension'],

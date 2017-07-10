@@ -6,7 +6,7 @@ use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Php as PhpEngine;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
-use Rocket\Volt\VoltExtension;
+use Rocket\Volt\VoltEngine;
 
 /**
  * Shared configuration service
@@ -53,16 +53,15 @@ $di->setShared('view', function () {
         '.volt' => function ($view, $di) use ($config) {
             $config = $this->getConfig();
 
-            $volt = new VoltExtension($view, $this);
+            $volt = new VoltEngine($view, $this);
 
             $volt->setOptions([
                 'compiledPath' => $config->application->cacheDir,
                 'compiledSeparator' => '_',
             ]);
-            error_log(print_r($config['volt']['extensions'], true));
             if (!empty($config['volt']['extensions'])) {
                 foreach ($config['volt']['extensions'] as $extension_class_name) {
-                    $di->get('volt.extension')->register($volt, new $extension_class_name($di));
+                    $di->get('volt.adapter')->register($volt, new $extension_class_name($di));
                 }
             }
 

@@ -6,13 +6,13 @@
  */
 namespace Rocket\Volt;
 
-use Phalcon\Mvc\View\Engine\Volt;
+use Phalcon\Mvc\View\Engine\Volt\Compiler;
 
 /**
- * Class VoltCompilerExtension
+ * Class VoltCompiler
  * @package Rocket\Volt
  */
-class VoltCompilerExtension extends Volt\Compiler
+class VoltCompiler extends Compiler
 {
     /**
      * @param string $path

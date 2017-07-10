@@ -9,9 +9,9 @@ namespace Rocket\Volt;
 class VoltAdapter
 {
     /**
-     * @param Rocket\Volt\VoltExtension $volt
+     * @param Rocket\Volt\VoltEngine $volt
      */
-    public function register(VoltExtension $volt, BaseVoltExtension $ext)
+    public function register(VoltEngine $volt, BaseVoltExtension $ext)
     {
         $compiler = $volt->getCompiler();
         $filters = $ext->getFilters();
