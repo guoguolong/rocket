@@ -4,7 +4,7 @@ use Rocket\Db\Article;
 
 class ArticleController extends ControllerBase
 {
-    public function listAction($site_id)
+    public function listAction($site_id = null)
     {
         $args = [];
         if ($site_id) {

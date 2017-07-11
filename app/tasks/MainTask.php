@@ -57,11 +57,12 @@ class MainTask extends \Phalcon\Cli\Task
             $site->email = (string) $author->getEmail();
             break;
         }
-        $site->title = (string) $feed->getTitle();
+  //      $title = (string)$feed->getTitle();
+        $site->title = 'abc';
         $site->link = (string) $feed->getId();
-        $site->subtitle = (string) $feed->getSubtitle();
+        $site->subtitle = 'def';
         $site->updated_at = date('Y-m-d H:i:s', strtotime($feed->getUpdated()));
-        $site->save();
+$site->save();
 
         return $site;
     }
