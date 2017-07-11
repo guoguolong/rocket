@@ -13,7 +13,10 @@
 </head>
 <body>
     <div id='header'>
-        {% block header %}<a href="/" style="color:#efefef;">我思故我在</a>{% endblock %}
+        {% block header %}
+        <a href="/" style="color:#efefef;">我思故我在</a>
+        <span> | <a href="/site/list">网站列表</a></span>
+        {% endblock %}
     </div>        
     <div class="container">
         {% block content %}{{ content() }}{% endblock %}

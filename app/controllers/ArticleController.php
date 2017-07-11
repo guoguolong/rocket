@@ -8,11 +8,16 @@ class ArticleController extends ControllerBase
     {
         $args = [];
         if ($site_id) {
-            $args['conditions'] = ['site_id' => $site_id];
+            $args = [
+                'site_id = :site_id:',
+                'bind' => [
+                    'site_id' => $site_id,
+                ],
+            ];
         }
-        $args['sort'] = ['published_at' => 1];
-        // echo '<pre>';
-        // print_r($args);exit;
+        $args['order'] = 'published_at DESC';
+        $args['limit'] = 200;
+
         $articles = Article::find($args);
         $this->view->setVars(['articles' => $articles]);
     }
