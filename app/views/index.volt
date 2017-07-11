@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+.logo-text {
+    float: left;
+    display: block;
+    width:40px;
+    height: 40px;
+    background: url(/img/ico-rocket.png) no-repeat left center;
+    background-size: auto 40px;
+    text-indent: 110%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: capitalize;
+}
+
+.top-bar {
+    display: flex;
+    padding-top: 8px;
+    justify-content: space-between;
+}
+
+.top-bar span.links a {
+    color: #FFFFFF;
+    font-size: 0.8rem;
+}
+</style>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,8 +39,11 @@
 <body>
     <div id='header'>
         {% block header %}
-        <a href="/" style="color:#efefef;">我思故我在</a>
-        <span> | <a href="/site/list">网站列表</a></span>
+        <a href="/" class="logo-text">Rocket</a>
+        <div class="top-bar">
+            <span> <a href="/" style="color:#efefef;">我思故我在</a></span>
+            <span class="links"> <a href="/site/list">网站列表</a></span>
+        </div>
         {% endblock %}
     </div>        
     <div class="container">

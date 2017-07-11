@@ -41,11 +41,10 @@ a:link {
 
 #header { 
     min-height: 40px;
-    background: #302030 url('/img/ico-rocket.png') no-repeat;
+    background: #302030;
     background-size:40px 40px;
-    padding-left: 45px; 
-    padding-top: 8px; 
     color: #ffffff;
+    padding: 0px 6px;
 }
 
 #footer { 
