@@ -13,7 +13,7 @@
 </head>
 <body>
     <div id='header'>
-        {% block header %}LOGO{% endblock %}
+        {% block header %}<a href="/" style="color:#efefef;">我思故我在</a>{% endblock %}
     </div>        
     <div class="container">
         {% block content %}{{ content() }}{% endblock %}

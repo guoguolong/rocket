@@ -1,15 +1,9 @@
 <?php
 
-use Rocket\Db\Article;
-
 class IndexController extends ControllerBase
 {
-
-    public function indexAction() {}
-
-    public function articlesAction()
+    public function indexAction()
     {
-        $articles = Article::find();
-        $this->view->setVars(['articles' => $articles]);
+        $this->response->redirect('article/list');
     }
 }

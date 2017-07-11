@@ -1,5 +1,5 @@
 body {
-    font: normal 16px/1.618 'PingFang SC','Helvetica Neue','Microsoft YaHei UI','Microsoft YaHei','Noto Sans CJK SC',Sathu,'EucrosiaUPC',sans-serif;
+    font: normal 14px 'PingFang SC','Helvetica Neue','Microsoft YaHei UI','Microsoft YaHei','Noto Sans CJK SC',Sathu,'EucrosiaUPC',sans-serif;
 }
 
 ul {
@@ -8,9 +8,44 @@ ul {
     list-style: none;
 }
 
+article {
+    display: block;
+    border-bottom: 1px dotted gray;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+figure.highlight table td.code pre {
+    background: #000000;
+    color: #ffffff;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+.h3 {
+    font-size: 1.2rem;
+}
+.site-block {
+    margin-bottom: 10px;
+    border-bottom: 1px dashed gray;
+}
+.site-block .title {
+    font-size: 1.2rem;
+    color: #582819;
+}
+.site-block .label {
+    font-weight: bold;
+}
+
 #header { 
-    min-height: 60px;
-    background: #efefef;
+    min-height: 40px;
+    background: #302030 url('/img/ico-rocket.png') no-repeat;
+    background-size:40px 40px;
+    padding-left: 45px; 
+    padding-top: 8px; 
+    color: #ffffff;
 }
 
 #footer { 

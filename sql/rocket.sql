@@ -5,22 +5,12 @@ CREATE TABLE site (
     title varchar(255),
     subtitle varchar(255),
     link varchar(255),
-    author_id varchar(90),
+    author varchar(90),
+    email varchar(90),
     power varchar(255),
     created_at timestamp default now(),
     updated_at datetime,
     primary key(site_id)
-);
-
-DROP TABLE IF EXISTS author;
-CREATE TABLE author (
-    author_id int not null auto_increment,
-    name varchar(255), 
-    email varchar(255),
-    site_id int,
-    created_at timestamp default now(),
-    updated_at datetime,
-    primary key(author_id)
 );
 
 DROP TABLE IF EXISTS tag;
@@ -34,10 +24,11 @@ DROP TABLE IF EXISTS article;
 CREATE TABLE article (
     article_id int not null auto_increment,
     code varchar(255), 
+    link varchar(255), 
     site_id int,
     title varchar(255),
     summary varchar(1000),
-    content text,
+    content mediumtext,
     published_at datetime,
     created_at timestamp default now(),
     updated_at datetime,
