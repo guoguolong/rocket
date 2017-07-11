@@ -8,6 +8,7 @@ CREATE TABLE site (
     author varchar(90),
     email varchar(90),
     power varchar(255),
+    articles int,
     created_at timestamp default now(),
     updated_at datetime,
     primary key(site_id)

@@ -28,10 +28,12 @@ class MainTask extends \Phalcon\Cli\Task
                 if (true === $site['atom']) {
                     $site['atom'] = $url . '/atom.xml';
                 }
-                if (is_string($site['atom'])) {
-                    $this->_atom($site);
-                }
             }
+            echo $site['atom'] . ' fetching...';
+            if (is_string($site['atom'])) {
+                $this->_atom($site);
+            }
+            echo ' Done' . PHP_EOL;
         }
     }
 
@@ -41,7 +43,7 @@ class MainTask extends \Phalcon\Cli\Task
         $this->modelsManager->executeQuery('DELETE FROM \Rocket\Db\Site');
     }
 
-    private function saveSite($feed)
+    private function saveSite($feed, $siteConf)
     {
         $link = $feed->getId();
         $code = md5($link);
@@ -60,7 +62,9 @@ class MainTask extends \Phalcon\Cli\Task
 
         $site->title = (string) $feed->getTitle();
         $site->link = (string) $feed->getId();
-        $site->subtitle = 'def';
+        $site->subtitle = (string) $feed->getSubtitle();
+        $site->power = $siteConf['power'];
+        $site->articles = $siteConf['articles'];
         $site->updated_at = date('Y-m-d H:i:s', strtotime($feed->getUpdated()));
 
         $site->save();
@@ -82,13 +86,15 @@ class MainTask extends \Phalcon\Cli\Task
 
         if ($document instanceof FeedDocument) {
             $feed = $document->getFeed();
-            $siteObj = $this->saveSite($feed);
+            $entries = $feed->getEntries();
+            $siteConf['articles'] = count($entries);
+            $siteObj = $this->saveSite($feed, $siteConf);
             // echo 'Feed: ', $feed->getTitle(), PHP_EOL;
             // echo 'Updated: ', $feed->getUpdated(), PHP_EOL;
             // foreach ($feed->getAuthors() as $author) {
             //     echo 'Author: ', $author->getName(), PHP_EOL;
             // }
-            foreach ($feed->getEntries() as $entry) {
+            foreach ($entries as $entry) {
                 $link = implode(',', $entry->getLinks());
                 $code = md5($entry->getId());
                 $published_at = date('Y-m-d H:i:s', strtotime($entry->getPublished()));
