@@ -1,6 +1,9 @@
 {
     "require": {
         "vinelab/rss": "^1.0",
-        "mekras/atom": "^1.0"
+        "mekras/atom": "^1.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "fabpot/goutte": "^3.2",
+        "symfony/dom-crawler": "^3.3"
     }
 }

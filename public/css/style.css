@@ -80,3 +80,27 @@ a:link {
 .vertical {
     align-items: center;
 }
+
+.logo-text {
+    float: left;
+    display: block;
+    width:40px;
+    height: 40px;
+    background: url(/img/ico-rocket.png) no-repeat left center;
+    background-size: auto 40px;
+    text-indent: 110%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: capitalize;
+}
+
+.top-bar {
+    display: flex;
+    padding-top: 8px;
+    justify-content: space-between;
+}
+
+.top-bar span.links a {
+    color: #FFFFFF;
+    font-size: 0.8rem;
+}
