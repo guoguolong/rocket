@@ -2,8 +2,8 @@
 
 return [
     'sites' => [
-        'http://codepub.cn' => [
-            'atom' => 'http://codepub.cn/atom.xml',
+        'http://www.codepub.cn' => [
+            'atom' => true,
             'power' => 'Hexo',
         ],
         'http://beyondvincent.com' => [

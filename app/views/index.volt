@@ -1,29 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
-            <meta content="IE=edge" http-equiv="X-UA-Compatible">
-                <meta content="width=device-width, initial-scale=1" name="viewport">
-                    <meta content="Coding、Git、代码托管、WebIDE、 冒泡、多人协作、开发协作、团队协作、开发管理、开发流程、软件开发管理、周期管理、SVN" name="Keywords">
-                        <meta content="Coding.net 是一个面向开发者的云端开发平台，提供 git/svn 代码托管，代码质量分析，在线 WebIDE，项目管理，开发协作，冒泡社区，提供个人和企业公有云及企业私有云的服务。" name="Description">
-                            <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-                            <title>
-                                Rocket
-                            </title>
-                            {% block head %}
-                            <link href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css" rel="stylesheet">
-                                <link href="/css/style.css" rel="stylesheet">
-                                    {% endblock %}
-                                </link>
-                            </link>
-                        </meta>
-                    </meta>
-                </meta>
-            </meta>
-        </meta>
+        <meta charset="utf-8"/>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <meta content="技术博客，PHP，Redis，软件开发，招聘" name="Keywords"/>
+        <meta content="高质量的技术文章聚合" name="Description"/>
+        <title>
+            Rocket
+        </title>
+        {% block head %}
+        <link href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css" rel="stylesheet"/>
+        <link href="/css/style.css" rel="stylesheet"/>
+        {% endblock %}
     </head>
     <body>
-        <div id="header">
+        <header class="general">
             {% block header %}
             <a class="logo-text" href="/">
                 Rocket
@@ -41,11 +33,13 @@
                 </span>
             </div>
             {% endblock %}
+        </header>
+        <div class="wrap">
+            <main class="container">
+                {% block content %}{{ content() }}{% endblock %}
+            </main>
         </div>
-        <div class="container">
-            {% block content %}{{ content() }}{% endblock %}
-        </div>
-        <div id="footer">
+        <footer>
             <div class="box vertical justify content-wrapper add-class">
                 <ul class="box vertical">
                     <li style="padding-right: 27px;">
@@ -58,7 +52,7 @@
                     </li>
                 </ul>
             </div>
-        </div>
+        </footer>
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js">
         </script>

@@ -115,9 +115,21 @@ class CommonVoltExtension extends BaseVoltExtension
         return $url;
     }
 
-    public static function digestFilter($content, $length = 300)
+    public static function digestFilter($content, $length = 200)
     {
-        return mb_substr(trim(strip_tags($content)), 0, $length);
+        $text = $content;
+        if (is_object($content) && get_class($content) === 'Rocket\Db\Article') {
+            $text = $content->summary;
+            if (!$text) {
+                $text = $content->content;
+            } else {
+                return $text;
+            }
+        }
+
+        if (is_string($text)) {
+            return mb_substr(trim(strip_tags($text)), 0, $length);
+        }
     }
 
     /**

@@ -1,35 +1,33 @@
+{% block head %}
+<link href="/css/hexo/apollo.css" rel="stylesheet"/>
+{% endblock %}
+
 {% block content %}
-<article>
-    <div style="display:flex;justify-content:space-between;">
-        <span class="h3">
-            <a href="/article/detail/{{ article.article_id }}">
-                # {{ article.title }}
+<div class="post">
+<article class="post-block">
+    <h1 class="post-title">
+        # {{ article.title }}
+    </h1>
+    <div class="post-info">{{ article.published_at }}</div>
+    <div class="post-content">
+        {{ article.content }}
+    </div>
+    <div class="refer">
+        <span>
+            <a target="_blank" href="{{ article.link }}">
+                原文链接
             </a>
         </span>
         <span>
-            发布于: {{ article.published_at }}
-        </span>
-        <span>
-            源自:
-            <a href="/article/list/{{ article.site_id }}">
-                {{ article.site.title }}
-            </a>
-            | By
             <a href="/site/detail/{{ article.site_id }}">
                 {{ article.site.author }}
             </a>
+        </span> 
+        <span><a href="/article/list/{{ article.site_id }}">所有文章</a>
         </span>
     </div>
-    <div class="content">
-        {{ article.content }}
-    </div>
-    <div style="display:flex; background: #eee;padding: 6px 0px;">
-        <span>
-            原文链接:
-            <a targe="_blank" href="{{ article.link }}">
-                {{ article.link }}
-            </a>
-        </span>
+    <div>
     </div>
 </article>
+</div>
 {% endblock %}

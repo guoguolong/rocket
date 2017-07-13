@@ -51,7 +51,7 @@ class Hexo extends Blog
                 break;
             }
             $siteConf['title'] = (string) $feed->getTitle();
-            $siteConf['link'] = (string) $feed->getId();
+            $siteConf['link'] = preg_replace('/\/$/', '', (string) $feed->getId());
             $siteConf['subtitle'] = (string) $feed->getSubtitle();
             $siteConf['updated_at'] = $feed->getUpdated();
 
@@ -86,7 +86,7 @@ class Hexo extends Blog
         return true;
     }
 
-    public function page()
+    public function pages()
     {
         $self = $this;
         $siteConf = $this->siteConf;
@@ -104,23 +104,29 @@ class Hexo extends Blog
         $crawler = $client->request('GET', $siteConf['baseUrl']);
         $crawler = $crawler
             ->filter('main section article')
-            ->each(function (Crawler $node, $i) use ($site) {
-                $site_data = static::_parse($node, $site);
+            ->each(function (Crawler $node, $i) use ($site, $self) {
+                // 获得Article数据
+                $article_data = static::_pagesParse($node, $site);
+                // 抓取Article详细数据;
+                $detail_data = $self->_pageFetchDetail($article_data['link']);
+                $article_data = array_merge($article_data, $detail_data);
+                $article_data['site_id'] = $site->site_id;
 
                 $article = null;
-                $existedArticle = Article::findFirstByCode($site_data['code']);
+                $existedArticle = Article::findFirstByCode($article_data['code']);
                 if ($existedArticle) {
-                    return;
+                    $article = $existedArticle;
+                } else {
+                    $article = new Article;
                 }
-
-                $article = new Article;
-                $article->published_at = $site_data['published_at'];
-                $article->updated_at = $site_data['published_at'];
-                $article->summary = $site_data['summary'];
-                $article->link = $site_data['link'];
-                $article->code = $site_data['code'];
-                $article->site_id = $site->site_id;
-                $article->title = $site_data['title'];
+                $article->published_at = $article_data['published_at'];
+                $article->updated_at = $article_data['published_at'];
+                $article->summary = $article_data['summary'];
+                $article->content = $article_data['content'];
+                $article->link = $article_data['link'];
+                $article->code = $article_data['code'];
+                $article->site_id = $article_data['site_id'];
+                $article->title = $article_data['title'];
 
                 $article->save();
             });
@@ -128,20 +134,38 @@ class Hexo extends Blog
         return true;
     }
 
-    protected static function _parse(Crawler $node, $site)
+    protected function _pageFetchDetail($link)
     {
-        $site_data = [];
-        $site_data['title'] = trim($node->filter('header h1 a')->text());
-        $site_data['link'] = $site->link . trim($node->filter('header h1 a')->attr('href'));
-        $site_data['code'] = md5($site_data['link']);
-        $site_data['published_at'] = date('Y-m-d H:i:s', strtotime(trim($node->filter('header time')->attr('datetime'))));
-        $site_data['summary'] = trim($node->filter('div[class="post-body"]')->getNode(0)->firstChild->nodeValue);
-        $site_data['summary'] = preg_replace('/\n/', '', $site_data['summary']);
-        $site_data['summary'] = preg_replace('/(\s*\.\.\.\s*)$/', '', $site_data['summary']);
-        return $site_data;
+        $client = new GoutteClient();
+        $client->setClient(new GuzzleClient([
+            'timeout' => $this->timeout,
+            'headers' => $this->headers,
+        ]));
+        $crawler = $client->request('GET', $link);
+        $article_data = [];
+        $crawler = $crawler
+            ->filter('main article')
+            ->each(function (Crawler $node, $i) use (&$article_data) {
+                $article_data['title'] = trim($node->filter('header h1')->text());
+                $article_data['content'] = trim($node->filter('div[class="post-body"]')->html());
+            });
+        return $article_data;
     }
 
-    protected function _setHeaders($headers)
+    protected static function _pagesParse(Crawler $node, $site)
+    {
+        $article_data = [];
+        $article_data['title'] = trim($node->filter('header h1 a')->text());
+        $article_data['link'] = $site->link . trim($node->filter('header h1 a')->attr('href'));
+        $article_data['code'] = md5($article_data['link']);
+        $article_data['published_at'] = date('Y-m-d H:i:s', strtotime(trim($node->filter('header time')->attr('datetime'))));
+        $article_data['summary'] = trim($node->filter('div[class="post-body"]')->getNode(0)->firstChild->nodeValue);
+        $article_data['summary'] = preg_replace('/\n/', '', $article_data['summary']);
+        $article_data['summary'] = preg_replace('/(\s*\.\.\.\s*)$/', '', $article_data['summary']);
+        return $article_data;
+    }
+
+    protected function _pagesHeaders($headers)
     {
         $this->headers = $headers;
     }

@@ -10,9 +10,9 @@ class SpiderTask extends MainTask
         $this->parse($params, 'atom');
     }
 
-    public function pageAction($params)
+    public function pagesAction($params)
     {
-        $this->parse($params, 'page');
+        $this->parse($params, 'pages');
     }
 
     protected function parse($params, $type = 'atom')
@@ -32,9 +32,9 @@ class SpiderTask extends MainTask
                 echo $blog->getSiteConf()['atom'] . ' fetching...';
                 $blog->atom();
             }
-            if ('page' === $type) {
+            if ('pages' === $type) {
                 echo $blog->getSiteConf()['baseUrl'] . ' fetching...';
-                $blog->page();
+                $blog->pages();
             }
             echo 'Done' . PHP_EOL;
         }
