@@ -19,12 +19,17 @@ class ArticleController extends ControllerBase
         $args['limit'] = 200;
 
         $articles = Article::find($args);
-        $this->view->setVars(['articles' => $articles]);
+        $total = Article::count($args);
+        $this->view->setVars(['articles' => $articles, 'total' => $total]);
     }
 
     public function detailAction($article_id)
     {
         $article = Article::findFirst($article_id);
+        if (!$article) {
+            $this->response->setStatusCode(404, 'Not Found');
+            $this->response->redirect('error/show404');
+        }
         $this->view->setVars(['article' => $article]);
     }
 }

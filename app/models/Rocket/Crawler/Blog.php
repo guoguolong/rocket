@@ -32,7 +32,10 @@ class Blog
 
     public static function getInstance($siteConf)
     {
-        $class_name = static::$BLOG_CLASSES[strtolower($siteConf['power'])];
+        $class_name = $siteConf['class'];
+        if (!$class_name) {
+            $class_name = static::$BLOG_CLASSES[strtolower($siteConf['power'])];
+        }
         if (!$class_name) {
             throw new Exception('Not existed engine for' . $class_name);
         }
@@ -42,6 +45,18 @@ class Blog
     public function getSiteConf()
     {
         return $this->siteConf;
+    }
+
+    public static function encodeUrl($link)
+    {
+        $url_segs = explode('/', $link);
+        $name = array_pop($url_segs);
+        if (!$name) {
+            $name = rawurlencode(array_pop($url_segs));
+        }
+        array_push($url_segs, $name);
+        $link = implode('/', $url_segs) . '/';
+        return $link;
     }
 
     public function saveSite()

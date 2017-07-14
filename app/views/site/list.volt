@@ -10,7 +10,7 @@
             </span>
             <span>
                 <a href="/article/list/{{ site.site_id }}">
-                    文章
+                    文章({{ site.articles }})
                 </a>
             </span>
         </div>
