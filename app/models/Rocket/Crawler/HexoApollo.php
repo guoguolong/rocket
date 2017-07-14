@@ -49,6 +49,7 @@ class HexoApollo extends Hexo
                 $existedArticle = Article::findFirstByCode($article_data['code']);
                 if ($existedArticle) {
                     $article = $existedArticle;
+                    echo 'udapted..';
                 } else {
                     $article = new Article;
                 }
@@ -116,15 +117,10 @@ class HexoApollo extends Hexo
         $article_data['link'] = $site->link . trim($node->filter('h2 a')->attr('href'));
         $article_data['code'] = md5($article_data['link']);
         $article_data['published_at'] = date('Y-m-d H:i:s', strtotime(trim($node->filter('div[class="post-info"]')->text())));
-        $article_data['summary'] = trim($node->filter('div[class="post-content"]')->text());
+        $article_data['summary'] = trim(strip_tags($node->filter('div[class="post-content"]')->text()));
         $article_data['summary'] = preg_replace('/\n/', '', $article_data['summary']);
         $article_data['summary'] = preg_replace('/(\s*\.\.\.\s*)$/', '', $article_data['summary']);
         $article_data['summary'] = trim(mb_substr($article_data['summary'], 0, 200));
         return $article_data;
-    }
-
-    protected function _pagesHeaders($headers)
-    {
-        $this->headers = $headers;
     }
 };

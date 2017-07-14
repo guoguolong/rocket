@@ -14,11 +14,11 @@ return [
         //     'atom' => false,
         //     'power' => 'Hexo',
         // ],
-        'http://andrewliu.in' => [
-            'atom' => true,
-            'power' => 'Hexo',
-            'class' => '\Rocket\Crawler\HexoApollo',
-        ],
+        // 'http://andrewliu.in' => [
+        //     'atom' => true,
+        //     'power' => 'Hexo',
+        //     'class' => '\Rocket\Crawler\HexoApollo',
+        // ],
 
         'https://www.domyself.me' => [
             'atom' => true,
