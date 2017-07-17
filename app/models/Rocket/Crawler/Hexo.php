@@ -1,8 +1,6 @@
 <?php
 namespace Rocket\Crawler;
 
-use Goutte\Client as GoutteClient;
-use GuzzleHttp\Client as GuzzleClient;
 use Mekras\Atom\DocumentFactory;
 use Mekras\Atom\Document\FeedDocument;
 use Mekras\Atom\Exception\AtomException;
@@ -93,64 +91,32 @@ class Hexo extends Blog
     public function pages($link = null)
     {
         $self = $this;
-        $siteConf = $this->siteConf;
-        $site = Site::findFirstByCode(md5($siteConf['baseUrl']));
+        $site = Site::findFirstByCode(md5($this->siteConf['baseUrl']));
 
         if (!$site) {
-            echo 'Site' . $siteConf['baseUrl'] . ' configuration is not existed.';
+            echo 'Site' . $this->siteConf['baseUrl'] . ' configuration is not existed.';
             return false;
         }
-        $client = new GoutteClient();
-        $client->setClient(new GuzzleClient([
-            'timeout' => $this->timeout,
-            'headers' => $this->headers,
-        ]));
+        $this->siteConf['id'] = $site->site_id;
+        $this->siteConf['link'] = $site->link;
         if (!$link) {
-            $link = $siteConf['baseUrl'];
+            $link = $this->siteConf['baseUrl'];
         }
-        $rootCrawler = $client->request('GET', $link);
-        $crawler = $rootCrawler
-            ->filter('main section article')
-            ->each(function (Crawler $node, $i) use ($site, $self) {
-                // 获得Article数据
-                $article_data = static::_pagesParse($node, $site);
-                // 抓取Article详细数据;
-                $detail_data = $self->_pageFetchDetail($article_data['link']);
-                if (empty($detail_data)) {
-                    echo '[FAILED]: ', $article_data['link'], PHP_EOL;
-                    return false;
-                }
+        $crawler = $this->fetchUrl($link);
+        if (!$crawler) {
+            return false;
+        }
+        $this->_pageListParse($crawler, $site);
 
-                $article_data = array_merge($article_data, $detail_data);
-                $article_data['site_id'] = $site->site_id;
-
-                $article = null;
-                $existedArticle = Article::findFirstByCode($article_data['code']);
-                if ($existedArticle) {
-                    $article = $existedArticle;
-                } else {
-                    $article = new Article;
-                }
-                $article->published_at = $article_data['published_at'];
-                $article->updated_at = $article_data['published_at'];
-                $article->summary = $article_data['summary'];
-                $article->content = $article_data['content'];
-                $article->link = $article_data['link'];
-                $article->code = $article_data['code'];
-                $article->site_id = $article_data['site_id'];
-                $article->title = $article_data['title'];
-
-                $article->save();
-            });
+        echo '.'; // 进度显示.
 
         // 下一页数据
-        $this->_pageNext($rootCrawler, $site->link);
+        $this->_pageNext($crawler, $this->siteConf['link']);
 
         // 更新site的文章计数
-        $articles = Article::countBySiteId($site->site_id);
-        $site->articles = $articles;
+        $site->articles = Article::countBySiteId($this->siteConf['id']);
         $site->save();
-        exit;
+
         return true;
     }
 
@@ -163,22 +129,45 @@ class Hexo extends Blog
                 $this->pages($link . $next_page_link);
             }
         } catch (\Exception $e) {
-            // echo $e->getMessage();
+            // echo PHP_EOL . '[BAD LINK]' . $next_page_link . ': ' . $e->getMessage() . PHP_EOL;
         }
     }
 
-    protected function _pageFetchDetail($link)
+    protected function _pageListParse(Crawler $crawler)
     {
-        $client = new GoutteClient();
-        $client->setClient(new GuzzleClient([
-            'timeout' => $this->timeout,
-            'headers' => $this->headers,
-        ]));
-        $olink = $link;
-        $link = static::encodeUrl($link);
-        $crawler = $client->request('GET', $link);
+        $self = $this;
+        $crawler
+            ->filter('main article')
+            ->each(function (Crawler $node, $i) use ($self) {
+                // 获得Article概要数据
+                $list_data = [];
+                $list_data['title'] = trim($node->filter('header h1 a')->text());
+                $list_data['link'] = $self->siteConf['link'] . trim($node->filter('header h1 a')->attr('href'));
+                $list_data['code'] = md5($list_data['link']);
+                $list_data['published_at'] = date('Y-m-d H:i:s', strtotime(trim($node->filter('header time')->attr('datetime'))));
+                $list_data['summary'] = trim($node->filter('div[class="post-body"]')->getNode(0)->firstChild->nodeValue);
+                $list_data['summary'] = preg_replace('/\n/', '', $list_data['summary']);
+                $list_data['summary'] = preg_replace('/(\s*\.\.\.\s*)$/', '', $list_data['summary']);
+
+                // 抓取Article详细数据
+                $detail_data = $self->_pageDetailParse($self->fetchUrl($list_data['link']));
+                if (empty($detail_data)) {
+                    echo '[FAILED]: ', $list_data['link'], PHP_EOL;
+                    return false;
+                }
+                // 合并Article概要和详细数据.
+                $article_data = array_merge($list_data, $detail_data);
+                $article_data['site_id'] = $self->siteConf['id'];
+
+                // 存储Article数据
+                $self->saveArticle($article_data);
+            });
+    }
+
+    protected function _pageDetailParse(Crawler $crawler)
+    {
         $article_data = [];
-        $crawler = $crawler
+        $crawler
             ->filter('main article')
             ->each(function (Crawler $node, $i) use (&$article_data) {
                 $article_data['title'] = trim($node->filter('header h1')->text());
@@ -186,22 +175,4 @@ class Hexo extends Blog
             });
         return $article_data;
     }
-
-    protected static function _pagesParse(Crawler $node, $site)
-    {
-        $article_data = [];
-        $article_data['title'] = trim($node->filter('header h1 a')->text());
-        $article_data['link'] = $site->link . trim($node->filter('header h1 a')->attr('href'));
-        $article_data['code'] = md5($article_data['link']);
-        $article_data['published_at'] = date('Y-m-d H:i:s', strtotime(trim($node->filter('header time')->attr('datetime'))));
-        $article_data['summary'] = trim($node->filter('div[class="post-body"]')->getNode(0)->firstChild->nodeValue);
-        $article_data['summary'] = preg_replace('/\n/', '', $article_data['summary']);
-        $article_data['summary'] = preg_replace('/(\s*\.\.\.\s*)$/', '', $article_data['summary']);
-        return $article_data;
-    }
-
-    protected function _pagesHeaders($headers)
-    {
-        $this->headers = $headers;
-    }
-};
+}

@@ -1,6 +1,9 @@
 <?php
 namespace Rocket\Crawler;
 
+use Goutte\Client as GoutteClient;
+use GuzzleHttp\Client as GuzzleClient;
+use Rocket\Db\Article;
 use Rocket\Db\Site;
 
 class Blog
@@ -59,9 +62,11 @@ class Blog
         return $link;
     }
 
-    public function saveSite()
+    public function saveSite($siteConf)
     {
-        $siteConf = $this->siteConf;
+        if (!$siteConf) {
+            $siteConf = $this->siteConf;
+        }
 
         $code = md5($siteConf['baseUrl']);
         $existed_site = Site::findFirstByCode($code);
@@ -85,5 +90,43 @@ class Blog
         $site->save();
 
         return $site;
+    }
+
+    protected function saveArticle($article_data)
+    {
+        $article = null;
+        $existedArticle = Article::findFirstByCode($article_data['code']);
+        if ($existedArticle) {
+            $article = $existedArticle;
+        } else {
+            $article = new Article;
+        }
+        $article->published_at = $article_data['published_at'];
+        $article->updated_at = $article_data['published_at'];
+        $article->summary = $article_data['summary'];
+        $article->content = $article_data['content'];
+        $article->link = $article_data['link'];
+        $article->code = $article_data['code'];
+        $article->site_id = $article_data['site_id'];
+        $article->title = $article_data['title'];
+
+        $article->save();
+        return $article;
+    }
+
+    protected function fetchUrl($link)
+    {
+        $client = new GoutteClient();
+        $client->setClient(new GuzzleClient([
+            'timeout' => $this->timeout,
+            'headers' => $this->headers,
+        ]));
+        $link = static::encodeUrl($link);
+        return $client->request('GET', $link);
+    }
+
+    protected function _pagesHeaders($headers)
+    {
+        $this->headers = $headers;
     }
 }
