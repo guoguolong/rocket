@@ -28,16 +28,15 @@ class SpiderTask extends MainTask
         foreach ($sites as $url => $site) {
             $site['baseUrl'] = $url;
             $blog = Blog::getInstance($site);
-            echo '[FETCHING]: ';
+
+            echo '[FETCHING SITE]: ' . $blog->getSiteConf()['link'];
             if ('atom' === $type) {
-                echo $blog->getSiteConf()['atom'];
                 $blog->atom();
             }
             if ('pages' === $type) {
-                echo $blog->getSiteConf()['baseUrl'];
                 $blog->pages();
             }
-            echo 'Done' . PHP_EOL;
+            echo ' done!' . PHP_EOL;
         }
     }
 

@@ -29,6 +29,7 @@ class Blog
     public function __construct($siteConf)
     {
         $siteConf['baseUrl'] = preg_replace('/\/$/', '', $siteConf['baseUrl']);
+        $siteConf['link'] = $siteConf['baseUrl'];
         $siteConf['domain'] = preg_replace('/^https*:\/\//', '', $siteConf['baseUrl']);
         $this->siteConf = $siteConf;
     }
@@ -58,11 +59,14 @@ class Blog
             $name = rawurlencode(array_pop($url_segs));
         }
         array_push($url_segs, $name);
-        $link = implode('/', $url_segs) . '/';
-        return $link;
+        $regular_link = implode('/', $url_segs);
+        if (preg_match('/\/$/', $link)) {
+            $regular_link .= '/';
+        }
+        return $regular_link;
     }
 
-    public function saveSite($siteConf)
+    public function saveSite($siteConf = null)
     {
         if (!$siteConf) {
             $siteConf = $this->siteConf;
@@ -83,9 +87,14 @@ class Blog
         $site->link = $siteConf['link'];
         $site->subtitle = $siteConf['subtitle'];
         $site->power = $siteConf['power'];
+        $site->theme = $siteConf['theme'];
         $site->code = $code;
         $site->articles = $siteConf['articles'];
-        $site->updated_at = date('Y-m-d H:i:s', strtotime($siteConf['updated_at']));
+        $updated_at = strtotime('now');
+        if ($siteConf['updated_at']) {
+            $updated_at = strtotime($siteConf['updated_at']);
+        }
+        $site->updated_at = date('Y-m-d H:i:s', $updated_at);
 
         $site->save();
 
@@ -122,7 +131,8 @@ class Blog
             'headers' => $this->headers,
         ]));
         $link = static::encodeUrl($link);
-        return $client->request('GET', $link);
+        $crawler = $client->request('GET', $link);
+        return $crawler;
     }
 
     protected function _pagesHeaders($headers)

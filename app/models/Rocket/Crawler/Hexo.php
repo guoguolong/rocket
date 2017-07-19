@@ -19,9 +19,10 @@ class Hexo extends Blog
         }
     }
 
-    public function atom()
+    public function atom($options = [])
     {
         if (!is_string($this->siteConf['atom'])) {
+            $this->saveSite();
             return false;
         }
 
@@ -42,18 +43,27 @@ class Hexo extends Blog
             $feed = $document->getFeed();
             $entries = $feed->getEntries();
             $siteConf['articles'] = count($entries);
-            $siteConf['link'] = $feed->getId();
+            // $siteConf['link'] = $feed->getId();
+            $email = null;
             foreach ($feed->getAuthors() as $author) {
                 $siteConf['author'] = (string) $author->getName();
-                $siteConf['email'] = (string) $author->getEmail();
+                $email = (string) $author->getEmail();
                 break;
             }
+            if ($email) {
+                $siteConf['email'] = $email;
+            }
             $siteConf['title'] = (string) $feed->getTitle();
-            $siteConf['link'] = preg_replace('/\/$/', '', (string) $feed->getId());
+            // $siteConf['link'] = preg_replace('/\/$/', '', (string) $feed->getId());
             $siteConf['subtitle'] = (string) $feed->getSubtitle();
             $siteConf['updated_at'] = $feed->getUpdated();
 
             $siteObj = $this->saveSite($siteConf);
+
+            if (!empty($options['only_site'])) {
+                // 仅存储站点.
+                return;
+            }
             foreach ($entries as $entry) {
                 $link = implode(',', $entry->getLinks());
                 $code = md5($entry->getId());

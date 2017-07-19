@@ -45,7 +45,3 @@ CREATE TABLE tag_article (
     article_id int,
     primary key(tag_article_id)
 );
-
-
-INSERT INTO site (site_id,code,title,subtitle,link,author,email,power,theme, class, articles,created_at,updated_at) VALUES
-(100, md5('http://www.jwangkun.com'),  'Fancy', 'Fancy', 'http://www.jwangkun.com', 'Fancy', 'dev@jwangkun.com','Hexo', 'NexT.Pisces', NULL, 0, now(), now());
