@@ -16,7 +16,7 @@ class ArticleController extends ControllerBase
             ];
         }
         $args['order'] = 'published_at DESC';
-        $args['limit'] = 200;
+        $args['limit'] = 20000;
 
         $articles = Article::find($args);
         $total = Article::count($args);

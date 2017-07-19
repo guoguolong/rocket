@@ -151,10 +151,18 @@ class Hexo extends Blog
             ->each(function (Crawler $node, $i) use ($self) {
                 // 获得Article概要数据
                 $list_data = [];
-                $list_data['title'] = trim($node->filter('header h1 a')->text());
-                $list_data['link'] = $self->siteConf['link'] . trim($node->filter('header h1 a')->attr('href'));
+                $node_title = null;
+                try {
+                    $node_title = $node->filter('header h1 a');
+                    $list_data['title'] = $node_title->text();
+                } catch (\InvalidArgumentException $e) {
+                    $node_title = $node->filter('header h2 a');
+                }
+                $list_data['title'] = trim($node_title->text());
+                $list_data['link'] = $self->siteConf['link'] . trim($node_title->attr('href'));
                 $list_data['code'] = md5($list_data['link']);
                 $list_data['published_at'] = date('Y-m-d H:i:s', strtotime(trim($node->filter('header time')->attr('datetime'))));
+
                 $list_data['summary'] = trim($node->filter('div[class="post-body"]')->getNode(0)->firstChild->nodeValue);
                 $list_data['summary'] = preg_replace('/\n/', '', $list_data['summary']);
                 $list_data['summary'] = preg_replace('/(\s*\.\.\.\s*)$/', '', $list_data['summary']);
@@ -180,7 +188,14 @@ class Hexo extends Blog
         $crawler
             ->filter('main article')
             ->each(function (Crawler $node, $i) use (&$article_data) {
-                $article_data['title'] = trim($node->filter('header h1')->text());
+                try {
+                    $node_title = $node->filter('header h1');
+                    $list_data['title'] = $node_title->text();
+                } catch (\InvalidArgumentException $e) {
+                    $node_title = $node->filter('header h2');
+                }
+
+                $article_data['title'] = trim($node_title->text());
                 $article_data['content'] = trim($node->filter('div[class="post-body"]')->html());
             });
         return $article_data;
