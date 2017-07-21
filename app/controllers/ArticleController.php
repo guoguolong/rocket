@@ -1,5 +1,6 @@
 <?php
 
+use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 use Rocket\Db\Article;
 
 class ArticleController extends ControllerBase
@@ -16,11 +17,22 @@ class ArticleController extends ControllerBase
             ];
         }
         $args['order'] = 'published_at DESC';
-        $args['limit'] = 20000;
+        // $args['limit'] = 10000;
 
-        $articles = Article::find($args);
+        // $articles = Article::find($args);
+        $current_page = 1;
         $total = Article::count($args);
-        $this->view->setVars(['articles' => $articles, 'total' => $total]);
+        $paginator = new PaginatorModel(
+            [
+                "data" => Article::find($args),
+                "limit" => 10,
+                "page" => $current_page,
+            ]
+        );
+
+        // Get the paginated results
+        $page = $paginator->getPaginate();
+        $this->view->setVars(['page' => $page, 'total' => $total]);
     }
 
     public function detailAction($article_id)

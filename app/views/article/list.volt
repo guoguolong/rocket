@@ -1,6 +1,6 @@
 {% block content %}
 <h6 >文章数:{{ total }}</h6>
-{% for article in articles %}
+{% for article in page.items %}
     <article>
         <div style="display:flex;justify-content:space-between;">
             <span class="h3"><a href="/article/detail/{{ article.article_id }}"># {{ article.title }}</a></span>
