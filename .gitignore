@@ -3,7 +3,7 @@
 vendor
 node_modules
 **/.DS_Store
-cache/*
-!cache/.gitkeep
 var/logs/*
 !var/logs/.gitkeep
+var/cache/*
+!var/cache/.gitkeep

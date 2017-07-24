@@ -27,7 +27,7 @@ return new \Phalcon\Config([
         'viewsDir' => APP_PATH . '/views/',
         'pluginsDir' => APP_PATH . '/plugins/',
         'libraryDir' => APP_PATH . '/library/',
-        'cacheDir' => BASE_PATH . '/cache/',
+        'cacheDir' => BASE_PATH . '/var/cache/',
 
         // This allows the baseUri to be understand project paths that are not in the root directory
         // of the webpspace.  This will break if the public/index.php entry point is moved or
