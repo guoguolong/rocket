@@ -1,1 +1,1 @@
-{{ partial('rocket/index.js') }}
+ {{ partial('rocket/js') }}
