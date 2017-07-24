@@ -1,3 +1,4 @@
+{% extends "layout.volt" %}
 {% block content %}
 <h6 >文章数:{{ total }}</h6>
 {% for article in page.items %}

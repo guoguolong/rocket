@@ -53,11 +53,11 @@
                 </ul>
             </div>
         </footer>
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        {% block bottom %}        
         <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js">
         </script>
-        <!-- Latest compiled and minified JavaScript -->
         <script src="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js">
         </script>
+        {% endblock %}
     </body>
 </html>

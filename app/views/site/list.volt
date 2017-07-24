@@ -1,3 +1,4 @@
+{% extends "layout.volt" %}
 {% block content %}
 <div class="content">
     {% for site in sites %}

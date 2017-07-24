@@ -1,4 +1,6 @@
+{% extends "layout.volt" %}
 {% block head %}
+{{ super() }}
 <link href="/css/hexo/apollo.css" rel="stylesheet"/>
 {% endblock %}
 
@@ -29,5 +31,9 @@
     <div>
     </div>
 </article>
-</div>
+<rocket></rocket>
+{% endblock %}
+{% block bottom %}
+{{ super() }}
+<script type="text/javascript" src="{{ config.api.baseUrl }}/rocket"></script>
 {% endblock %}

@@ -42,4 +42,10 @@ return new \Phalcon\Config([
         'extensions' => ['Rocket\Volt\CommonVoltExtension'],
     ],
     'crawler' => $config_crawler,
+    'logger' => [
+        'db' => BASE_PATH . '/var/logs/db.log',
+    ],
+    'api' => [
+        'baseUrl' => '',
+    ],
 ]);

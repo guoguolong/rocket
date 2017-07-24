@@ -1,0 +1,1 @@
+{{ partial('rocket/index.js') }}

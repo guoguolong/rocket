@@ -1,6 +1,10 @@
 <?php
 
+use Phalcon\Events\Event;
+use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Flash\Direct as Flash;
+use Phalcon\Logger;
+use Phalcon\Logger\Adapter\File as FileLogger;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View;
@@ -120,6 +124,18 @@ $di->setShared('db', function () {
     }
 
     $connection = new $class($params);
+
+    $eventsManager = new EventsManager();
+    $logger = new FileLogger($config->logger->db);
+    $eventsManager->attach(
+        'db:beforeQuery',
+        function (Event $event, $connection) use ($logger) {
+            $sql = $connection->getSQLStatement();
+            $logger->log($sql, Logger::INFO);
+        }
+    );
+    // Assign the eventsManager to the db adapter instance
+    $connection->setEventsManager($eventsManager);
 
     return $connection;
 });
