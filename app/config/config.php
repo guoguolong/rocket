@@ -13,8 +13,8 @@ return new \Phalcon\Config([
     'database' => [
         'adapter' => 'Mysql',
         'host' => 'localhost',
-        'username' => 'mirroroffice',
-        'password' => 'mirroroffice',
+        'username' => 'zz',
+        'password' => 'ggl2018@nj',
         'dbname' => 'rocket',
         'charset' => 'utf8',
     ],
